@@ -89,6 +89,19 @@ export const MyHoldings = () => {
 
           const nftMetadata: NFTMetaData = await getMetadataFromIPFS(ipfsHash);
 
+          // Try to fetch image from DB
+          try {
+            const dbRes = await fetch(`/api/db/get-image?hash=${ipfsHash}`);
+            if (dbRes.ok) {
+              const dbJson = await dbRes.json();
+              if (dbJson?.found && dbJson?.imageUrl) {
+                nftMetadata.image = dbJson.imageUrl;
+              }
+            }
+          } catch (e) {
+            // ignore DB errors, fallback to IPFS metadata image
+          }
+
           collectibleUpdate.push({
             id: parseInt(tokenId.toString()),
             uri: tokenURI,

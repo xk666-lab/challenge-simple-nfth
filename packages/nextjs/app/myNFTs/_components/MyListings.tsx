@@ -350,7 +350,7 @@ export const MyListings = () => {
                                 暂停中...
                               </>
                             ) : (
-                              <>暂停上架</>
+                              <>暂停</>
                             )}
                           </button>
                         ) : (
@@ -365,7 +365,7 @@ export const MyListings = () => {
                                 恢复中...
                               </>
                             ) : (
-                              <>恢复上架</>
+                              <>激活</>
                             )}
                           </button>
                         )}

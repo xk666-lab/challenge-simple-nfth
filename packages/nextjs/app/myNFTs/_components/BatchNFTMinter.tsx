@@ -31,6 +31,7 @@ export const BatchNFTMinter = () => {
       notification.error("批量数量必须在1-20之间");
       return;
     }
+         
 
     setIsUploading(true);
     setPhase('uploading');
@@ -52,7 +53,23 @@ export const BatchNFTMinter = () => {
         for (let j = i; j < batchEnd; j++) {
           const metadata = nftsMetadata[j % nftsMetadata.length];
           batch.push(
-            addToIPFS(metadata).catch(error => {
+            addToIPFS(metadata).then(async (result) => {
+              // Upload success, try to save to DB
+              try {
+                await fetch("/api/db/save-image", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    walletAddress: connectedAddress,
+                    metadataHash: result.path,
+                    imageUrl: metadata.image,
+                  }),
+                });
+              } catch (e) {
+                console.error("Save batch image to DB failed", e);
+              }
+              return result;
+            }).catch(error => {
               console.error(`Upload failed for NFT ${j + 1}:`, error);
               throw new Error(`NFT ${j + 1} 上传失败: ${error.message}`);
             })

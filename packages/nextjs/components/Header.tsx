@@ -44,6 +44,11 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/blind-auctions",
     icon: <ArrowPathIcon className="h-4 w-4" />,   
   },
+  {
+    label: "Airdrop",
+    href: "/airdrop",
+    icon: <ArrowDownTrayIcon className="h-4 w-4" />,
+  },
 
   {
     label: "Transfers",

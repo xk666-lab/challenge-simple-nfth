@@ -105,7 +105,22 @@ export const ExcelBatchMinter = () => {
     try {
       for (let i = 0; i < uploadResults.length; i++) {
         const nftResult = uploadResults[i];
-        
+
+        // Save to DB before minting
+        try {
+          await fetch("/api/db/save-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              walletAddress: connectedAddress,
+              metadataHash: nftResult.metadataHash,
+              imageUrl: nftResult.imageUrl,
+            }),
+          });
+        } catch (e) {
+          console.error("Save excel batch image to DB failed", e);
+        }
+
         // 铸造NFT
         await writeContractAsync({
           functionName: "mintItem",

@@ -66,7 +66,22 @@ export const AirdropMinter = () => {
       setMetadataHash(metaJson.metadataHash);
       notification.remove(loadingId);
       notification.success("元数据已创建");
+      try {
+        await fetch("/api/db/save-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            walletAddress: connectedAddress,
+            metadataHash: metaJson.metadataHash,
+            imageUrl: imgJson.imageUrl,
+          }),
+        });
+      } catch (e) {
+        console.error("Save airdrop image to DB failed", e);
+      }
+
       return metaJson.metadataHash as string;
+
     } catch (e) {
       notification.remove(loadingId);
       notification.error((e as Error).message || "上传或创建元数据失败");

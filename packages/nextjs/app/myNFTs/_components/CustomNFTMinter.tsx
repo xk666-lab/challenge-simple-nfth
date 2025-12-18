@@ -100,6 +100,21 @@ export const CustomNFTMinter = () => {
       if (!metadataResult.success) {
         throw new Error(metadataResult.error || "Failed to create metadata");
       }
+          // Save image url to DB
+      try {
+        await fetch("/api/db/save-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            walletAddress: connectedAddress,
+            metadataHash: metadataResult.metadataHash,
+            imageUrl: uploadedImageUrl,
+          }),
+        });
+      } catch (e) {
+        console.error("Save image to DB failed", e);
+      }
+
 
       // Mint the NFT
       await writeContractAsync({
