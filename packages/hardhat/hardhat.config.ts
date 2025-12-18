@@ -40,8 +40,7 @@ const config: HardhatUserConfig = {
   defaultNetwork: "localhost",
   namedAccounts: {
     deployer: {
-      // By default, it will take the first Hardhat account as the deployer
-      default: 0,
+      default: 0, // Use the first account from the accounts array
     },
   },
   networks: {
@@ -55,6 +54,10 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: "https://mainnet.rpc.buidlguidl.com",
+      accounts: [deployerPrivateKey],
+    },
+    localhost: {
+      url: "http://localhost:8545",
       accounts: [deployerPrivateKey],
     },
     sepolia: {

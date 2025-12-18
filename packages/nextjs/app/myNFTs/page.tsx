@@ -1,6 +1,6 @@
 "use client";
 
-import { MyHoldings } from "./_components";
+import { AirdropMinter, BatchNFTMinter, CustomNFTMinter, ExcelBatchMinter, MyHoldings, MyListings } from "./_components";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
@@ -8,6 +8,7 @@ import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaf
 import { notification } from "~~/utils/scaffold-eth";
 import { addToIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
 import nftsMetadata from "~~/utils/simpleNFT/nftsMetadata";
+
 
 const MyNFTs: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
@@ -53,16 +54,42 @@ const MyNFTs: NextPage = () => {
           </h1>
         </div>
       </div>
-      <div className="flex justify-center">
-        {!isConnected || isConnecting ? (
+      
+      {!isConnected || isConnecting ? (
+        <div className="flex justify-center">
           <RainbowKitCustomConnectButton />
-        ) : (
-          <button className="btn btn-secondary" onClick={handleMintItem}>
-            Mint NFT
-          </button>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 justify-center items-start px-5 mb-8">
+          {/* Original Mint NFT */}
+          <div className="card bg-base-100 shadow-xl w-full max-w-md mx-auto">
+            <div className="card-body">
+              <h2 className="card-title text-center">Mint Preset NFT</h2>
+              <p className="text-center text-sm opacity-70 mb-4">
+                Mint from predefined collection
+              </p>
+              <button className="btn btn-secondary" onClick={handleMintItem}>
+                Mint NFT
+              </button>
+            </div>
+          </div>
+          
+          {/* Custom NFT Minter */}
+          <CustomNFTMinter />
+          
+          {/* Batch NFT Minter */}
+          <BatchNFTMinter />
+          
+          {/* Excel Batch Minter */}
+          <ExcelBatchMinter />
+        </div>
+      )}
+      
       <MyHoldings />
+      <MyListings />
+      {/* Airdrop NFTs */}
+          <AirdropMinter />
+
     </>
   );
 };

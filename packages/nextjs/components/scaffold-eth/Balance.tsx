@@ -53,20 +53,20 @@ export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
 
   return (
     <button
-      className={`btn btn-sm btn-ghost flex flex-col font-normal items-center hover:bg-transparent ${className}`}
+      className={`btn btn-xs btn-ghost font-normal items-center hover:bg-transparent p-0 h-auto min-h-0 ${className}`}
       onClick={toggleDisplayUsdMode}
       type="button"
     >
-      <div className="w-full flex items-center justify-center">
+      <div className="flex items-center justify-end gap-1">
         {displayUsdMode ? (
           <>
-            <span className="text-[0.8em] font-bold mr-1">$</span>
-            <span>{(formattedBalance * nativeCurrencyPrice).toFixed(2)}</span>
+            <span className="text-sm font-bold">$</span>
+            <span className="text-base font-semibold">{(formattedBalance * nativeCurrencyPrice).toFixed(2)}</span>
           </>
         ) : (
           <>
-            <span>{formattedBalance.toFixed(4)}</span>
-            <span className="text-[0.8em] font-bold ml-1">{targetNetwork.nativeCurrency.symbol}</span>
+            <span className="text-base font-semibold">{formattedBalance.toFixed(3)}</span>
+            <span className="text-xs font-medium opacity-70">{targetNetwork.nativeCurrency.symbol}</span>
           </>
         )}
       </div>

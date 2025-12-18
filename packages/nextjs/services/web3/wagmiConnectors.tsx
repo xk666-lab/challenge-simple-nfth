@@ -20,7 +20,8 @@ const wallets = [
   coinbaseWallet,
   rainbowWallet,
   safeWallet,
-  ...(!targetNetworks.some(network => network.id !== (chains.hardhat as chains.Chain).id) || !onlyLocalBurnerWallet
+  // Show burner wallet if we're on localhost (chain ID 1337) or if onlyLocalBurnerWallet is false
+  ...(!targetNetworks.some(network => network.id !== 1337) || !onlyLocalBurnerWallet
     ? [rainbowkitBurnerWallet]
     : []),
 ];
