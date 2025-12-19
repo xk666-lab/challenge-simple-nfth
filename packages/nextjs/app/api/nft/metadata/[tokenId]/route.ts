@@ -77,6 +77,35 @@ export async function GET(
       metadata.image = metadata.image.replace("ipfs://", PINATA_GATEWAY);
     }
 
+    // [New] 尝试从数据库获取优化后的图片链接
+    try {
+      const { ensureSchema, getMySqlPool } = await import("~~/utils/db/mysql");
+      await ensureSchema();
+      const pool = getMySqlPool();
+      
+      // Extract hash from tokenURI for DB lookup
+      let ipfsHash = tokenURI as string;
+      const patterns = [
+        /^https?:\/\/.*\.mypinata\.cloud\/ipfs\//,
+        /^https?:\/\/gateway\.pinata\.cloud\/ipfs\//,
+        /^https?:\/\/ipfs\.io\/ipfs\//,
+        /^ipfs:\/\//,
+      ];
+      for (const pattern of patterns) {
+        ipfsHash = ipfsHash.replace(pattern, '');
+      }
+
+      const [rows] = await pool.query("SELECT image_url FROM nft_images WHERE metadata_hash = ? LIMIT 1", [ipfsHash]);
+      const result = Array.isArray(rows) && rows.length > 0 ? (rows[0] as any) : null;
+      
+      if (result && result.image_url) {
+        console.log(`[Metadata API] Database hit for image: ${result.image_url}`);
+        metadata.image = result.image_url;
+      }
+    } catch (dbError) {
+      console.error("[Metadata API] DB lookup failed, falling back to IPFS image", dbError);
+    }
+
     console.log(`[Metadata API] Successfully fetched metadata for token ${tokenId}`);
     return NextResponse.json(metadata);
   } catch (error: any) {
